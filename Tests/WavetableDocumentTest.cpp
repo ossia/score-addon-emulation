@@ -642,7 +642,7 @@ TEST_CASE("Wavetable graphics and inspector editors share native sample undo pat
     sampleMouse(window, *editor, QEvent::MouseButtonRelease, {.2, .1});
     CHECK(first.value() == firstEdit.after); CHECK(second.value() == secondEdit.after);
     std::unique_ptr<QWidget> inspector{WidgetFactory::WaveformInletItems::make_widget(first, doc->context(), nullptr, &model)};
-    auto* inspectorView = qobject_cast<QGraphicsView*>(inspector.get()); REQUIRE(inspectorView); REQUIRE(inspectorView->scene());
+    auto* inspectorView = inspector->findChild<QGraphicsView*>(); REQUIRE(inspectorView); REQUIRE(inspectorView->scene());
     inspector->resize(460, 210); REQUIRE(score::test::showAndActivate(*inspector));
     auto& inspectorEditor = onlyWaveformEditor(*inspectorView->scene());
     const Selection inspected{&first}; doc->context().selectionStack.pushNewSelection(inspected);

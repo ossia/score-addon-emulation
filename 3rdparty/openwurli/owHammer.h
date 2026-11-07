@@ -1,0 +1,124 @@
+/**
+ * OpenWurli DSP — Hammer model: Gaussian dwell filter + attack noise
+ * Ported from Rust openwurli-dsp 0.9.0 hammer.rs (GPL v3)
+ */
+#pragma once
+
+#include "owFilters.h"
+#include "owTables.h"
+#include <cmath>
+#include <algorithm>
+#include <array>
+#include <cstdint>
+
+namespace openWurli
+{
+
+/// Hammer dwell time (contact duration): 0.75 cycles at ff, 1.0 at pp
+inline double dwellTime(double velocity, double fundamentalHz)
+{
+	const double cycles = 0.75 + 0.25 * (1.0 - velocity);
+	return std::clamp(cycles / fundamentalHz, 0.0003, 0.020);
+}
+
+/// Onset ramp time (reed mechanical inertia): 1.0 period at ff, 2.0 at pp, 2 ms floor.
+inline double onsetRampTime(double velocity, double fundamentalHz)
+{
+	const double periodS = 1.0 / fundamentalHz;
+	const double periods = 1.0 + 1.0 * (1.0 - velocity);
+	return std::max(periods * periodS, 0.002);
+}
+
+/// Gaussian dwell filter per-mode attenuation (normalised so mode 0 = 1)
+inline std::array<double, NUM_MODES> dwellAttenuation(
+	double velocity, double fundamentalHz,
+	const std::array<double, NUM_MODES>& modeRatiosArr)
+{
+	const double tDwell = dwellTime(velocity, fundamentalHz);
+	constexpr double sigmaSq = 8.0 * 8.0;
+
+	std::array<double, NUM_MODES> atten;
+	for (int i = 0; i < NUM_MODES; i++)
+	{
+		const double ft = fundamentalHz * modeRatiosArr[i] * tDwell;
+		atten[i] = std::exp(-ft * ft / (2.0 * sigmaSq));
+	}
+
+	const double a0 = atten[0];
+	if (a0 > 1e-30)
+	{
+		for (auto& a : atten)
+			a /= a0;
+	}
+	return atten;
+}
+
+/// Attack noise: exponentially decaying bandpass noise with a 16-sample raised-cosine
+/// fade-in so simultaneous voices never sum a step at sample 0.
+class AttackNoise
+{
+public:
+	AttackNoise() = default;
+
+	void init(double velocity, double fundamentalHz, double sampleRate, uint32_t seed)
+	{
+		m_amplitude = 0.025 * velocity * velocity;
+		constexpr double tau = 0.003;
+		m_decayPerSample = std::exp(-1.0 / (tau * sampleRate));
+		m_remaining = static_cast<uint32_t>(0.015 * sampleRate);
+		m_fadeInRemaining = NOISE_FADE_IN_SAMPLES;
+
+		const double center = std::clamp(fundamentalHz * 5.0, 200.0, 2000.0);
+		m_bpf = Biquad::bandpass(center, 0.7, sampleRate);
+		m_rngState = seed;
+	}
+
+	size_t render(double* output, size_t numSamples)
+	{
+		const size_t count = std::min(static_cast<size_t>(m_remaining), numSamples);
+		double amp = m_amplitude;
+		uint32_t fadeIn = m_fadeInRemaining;
+
+		for (size_t i = 0; i < count; i++)
+		{
+			double env = 1.0;
+			if (fadeIn > 0)
+			{
+				const uint32_t pos = NOISE_FADE_IN_SAMPLES - fadeIn;
+				const double t = static_cast<double>(pos) / static_cast<double>(NOISE_FADE_IN_SAMPLES);
+				fadeIn--;
+				env = 0.5 * (1.0 - std::cos(M_PI * t));
+			}
+			const double noise = nextNoise();
+			const double filtered = m_bpf.process(noise);
+			output[i] += amp * env * filtered;
+			amp *= m_decayPerSample;
+		}
+
+		m_amplitude = amp;
+		m_fadeInRemaining = fadeIn;
+		m_remaining -= static_cast<uint32_t>(count);
+		return count;
+	}
+
+	bool isDone() const { return m_remaining == 0; }
+	void disable() { m_remaining = 0; }
+
+private:
+	static constexpr uint32_t NOISE_FADE_IN_SAMPLES = 16;
+
+	double nextNoise()
+	{
+		m_rngState = m_rngState * 1664525u + 1013904223u;
+		return static_cast<double>(static_cast<int32_t>(m_rngState)) / static_cast<double>(INT32_MAX);
+	}
+
+	double m_amplitude = 0.0;
+	double m_decayPerSample = 0.0;
+	uint32_t m_remaining = 0;
+	uint32_t m_fadeInRemaining = 0;
+	Biquad m_bpf;
+	uint32_t m_rngState = 0;
+};
+
+} // namespace openWurli

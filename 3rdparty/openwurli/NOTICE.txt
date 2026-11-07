@@ -1,0 +1,45 @@
+OpenWurli DSP C++ port
+Source: https://github.com/reales/retromulator
+Exact revision: bb7ffd871c7c227aed0671ba39df8188a7a4697d
+Upstream directory: source/openWurliLib
+License: GNU General Public License version 3 (LICENSE.txt retained from repository root).
+Each ow*.h header is retained verbatim, including its upstream GPL v3 / Rust
+openwurli-dsp 0.9.0 port attribution. The upstream files do not contain individual
+copyright-holder lines; none have been invented here.
+
+Source selection: all sixteen ow*.h model headers; no device.h/device.cpp,
+synthLib, JUCE, UI, assets/parameter descriptions, other engines or plugins.
+The score Engine.cpp is a separately marked adaptation of the pinned device.cpp
+signal chain, with native score lifecycle, MIDI and allocation ownership.
+
+Asset audit: owPickupTables.h contains generated electrostatic 2D-field-solve
+capacitance curves, not recorded audio. owMlpWeights.h contains the GPL v3
+2-16-16-11 correction network weights, evaluated once per note. owTables.h
+contains beam-theory reed parameters with calibrated model constants. These are
+source model coefficients, not ROM images, sampled instruments, or manufacturer
+patch banks. No external model file, ROM, samples or user asset is required.
+
+Local dependency changes: none. Native adaptation initializes the same circuit
+at the host sample rate; supports 44100..192000 Hz (the unmodified cabinet has a
+20 kHz bypass low-pass); adds independent linear output Volume, 16 MIDI-channel
+controller state, bounded 64-voice allocation, exact mute, reset and deterministic
+render partitioning. Fixed-rate tremolo follows the upstream circuit, not an
+invented hardware rate switch. Pitch bend, pressure, program changes and SysEx
+are not implemented by this acoustic reed model. Native MIDI controllers:
+CC1 tremolo, CC7 channel level, CC11 channel expression, CC64 sustain,
+CC70 correction, CC71 speaker character, CC75 velocity curve,
+CC120 all sound off, CC121 controller reset, CC123 all notes off, FF reset.
+Upstream volume-pot modeling is exposed separately as Amplifier; output Volume
+is a linear post-circuit gain. Model correction, speaker character and velocity
+curves are explicitly software model/performance controls, not hardware switches.
+Native velocity choices are 0 Linear (default), 1 Soft, 2 Hard, 3 Fixed.
+Linear passes MIDI velocity unchanged into the physical model's response;
+Soft squares it, Hard takes its square root, Fixed uses 0.75. The upstream
+duplicate Medium choice is omitted. CC75 values 0..3 select directly;
+values 4..127 select by integer division by 32.
+Held-note lifetimes remain independently counted after voice stealing or natural
+silence, so a late Note Off cannot release a newer repetition of the same key.
+Channel All Sound Off does not reset another channel's pedal/controllers.
+
+Redistribution must retain these notices and the complete GPL v3 license and
+provide the corresponding source for the GPL-covered combined work.

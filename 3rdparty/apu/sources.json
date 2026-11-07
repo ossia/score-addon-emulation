@@ -1,0 +1,210 @@
+{
+  "format": 1,
+  "scope": "Headless source-only NES and Game Boy APU cores; no player, CPU, ROM/music loader, game asset, upstream build file or binary.",
+  "audit": "Pinned recursive GitHub Git Trees and Git Blobs API; audited transitive includes, source license notices, model branches, filter arithmetic and allocation cleanup. Build/runtime evidence is recorded in the project changelog and task ledger.",
+  "dependencies": [
+    {
+      "repository": "https://github.com/libgme/game-music-emu",
+      "revision": "f68963b1de0633149b05732113d3c3113c6f63a1",
+      "tree_api": "https://api.github.com/repos/libgme/game-music-emu/git/trees/f68963b1de0633149b05732113d3c3113c6f63a1?recursive=1",
+      "directory": "game-music-emu",
+      "license": "LGPL-2.1-or-later",
+      "license_files": [
+        "license.txt"
+      ],
+      "files": [
+        {
+          "path": "gme/Nes_Apu.cpp",
+          "upstream_git_blob": "0718aa05129dd758625869681e0c01ebdb78d1d0",
+          "upstream_size": 8850,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/0718aa05129dd758625869681e0c01ebdb78d1d0",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/Nes_Apu.h",
+          "upstream_git_blob": "1650e6be8fe8d97192717938b53fdab8430614e9",
+          "upstream_size": 5585,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/1650e6be8fe8d97192717938b53fdab8430614e9",
+          "locally_modified": true
+        },
+        {
+          "path": "gme/Nes_Oscs.cpp",
+          "upstream_git_blob": "153606d0a59b8e2a00aa073ab43a5c80f4fc7a33",
+          "upstream_size": 12147,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/153606d0a59b8e2a00aa073ab43a5c80f4fc7a33",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/Nes_Oscs.h",
+          "upstream_git_blob": "36a0d7d77394cc57d1bf903e64e94b901813e66e",
+          "upstream_size": 2866,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/36a0d7d77394cc57d1bf903e64e94b901813e66e",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/Blip_Buffer.cpp",
+          "upstream_git_blob": "f3467159087919d82da129f1b9fc22c074cf5d65",
+          "upstream_size": 11847,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/f3467159087919d82da129f1b9fc22c074cf5d65",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/Blip_Buffer.h",
+          "upstream_git_blob": "7c82d5e33ff7426fda6fb7c3e504e8d9d261d4fa",
+          "upstream_size": 16210,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/7c82d5e33ff7426fda6fb7c3e504e8d9d261d4fa",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/blargg_common.h",
+          "upstream_git_blob": "3b356853c67244a765942fe329a74296ff61c7b9",
+          "upstream_size": 2832,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/3b356853c67244a765942fe329a74296ff61c7b9",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/blargg_config.h",
+          "upstream_git_blob": "28d7f26228788555922e934b4b9a81bff71155d0",
+          "upstream_size": 950,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/28d7f26228788555922e934b4b9a81bff71155d0",
+          "locally_modified": false
+        },
+        {
+          "path": "gme/blargg_source.h",
+          "upstream_git_blob": "8c28a0d2d5df9b7c75bbeb7518509206024888f9",
+          "upstream_size": 2788,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/8c28a0d2d5df9b7c75bbeb7518509206024888f9",
+          "locally_modified": false
+        },
+        {
+          "path": "license.txt",
+          "upstream_git_blob": "53afb04e5a0c9776c1640c9bd9ac10bea1bad987",
+          "upstream_size": 26938,
+          "upstream_blob_api": "https://api.github.com/repos/libgme/game-music-emu/git/blobs/53afb04e5a0c9776c1640c9bd9ac10bea1bad987",
+          "locally_modified": false
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/ITotalJustice/gb_apu",
+      "revision": "3d73d0df027a82d854cacd72a179c2d6a1a9703e",
+      "tree_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/trees/3d73d0df027a82d854cacd72a179c2d6a1a9703e?recursive=1",
+      "directory": "gb_apu",
+      "license": "MIT",
+      "license_files": [
+        "LICENCE.txt",
+        "blargg/blip_buf.c (embedded complete MIT license, Copyright 2003-2009 Shay Green)"
+      ],
+      "files": [
+        {
+          "path": "gb_apu.c",
+          "upstream_git_blob": "07eaf5f46f5019fdc2452ba0e092b98aed68755e",
+          "upstream_size": 54389,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/07eaf5f46f5019fdc2452ba0e092b98aed68755e",
+          "locally_modified": true
+        },
+        {
+          "path": "gb_apu.h",
+          "upstream_git_blob": "60c4e855363ba3ed4dbac95fe4c54354171a9881",
+          "upstream_size": 5493,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/60c4e855363ba3ed4dbac95fe4c54354171a9881",
+          "locally_modified": false
+        },
+        {
+          "path": "blargg/blip_buf.c",
+          "upstream_git_blob": "69b3970957b6847b51f835bab9aa9b08a057a8f9",
+          "upstream_size": 10999,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/69b3970957b6847b51f835bab9aa9b08a057a8f9",
+          "locally_modified": true
+        },
+        {
+          "path": "blargg/blip_buf.h",
+          "upstream_git_blob": "54454369fe44dddb374f846dd90eb157ac6965dc",
+          "upstream_size": 3459,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/54454369fe44dddb374f846dd90eb157ac6965dc",
+          "locally_modified": false
+        },
+        {
+          "path": "blargg/blip_wrap.c",
+          "upstream_git_blob": "e611a4599acdc46940bf70775f39a77a5c8855d9",
+          "upstream_size": 2822,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/e611a4599acdc46940bf70775f39a77a5c8855d9",
+          "locally_modified": false
+        },
+        {
+          "path": "blargg/blip_wrap.h",
+          "upstream_git_blob": "23a4b9fddcc016bb621e85f14e6a1c0706c72d17",
+          "upstream_size": 1062,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/23a4b9fddcc016bb621e85f14e6a1c0706c72d17",
+          "locally_modified": false
+        },
+        {
+          "path": "LICENCE.txt",
+          "upstream_git_blob": "318a75d3ad9b6c7b64de81920adf6c4bc7de78a8",
+          "upstream_size": 1069,
+          "upstream_blob_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/blobs/318a75d3ad9b6c7b64de81920adf6c4bc7de78a8",
+          "locally_modified": false
+        }
+      ]
+    }
+  ],
+  "backend": {
+    "nes": "Nes_Apu, Nes_Oscs and one C++ Blip_Buffer implementation.",
+    "gb": "Upstream supported blip_buf C backend: gb_apu.c + blargg/blip_wrap.c + blargg/blip_buf.c; no GB copy of Blip_Buffer.",
+    "defines": [
+      "GB_APU_CXX=0",
+      "GB_APU_HAS_MATH_H=1"
+    ],
+    "private_include_directories": [
+      "game-music-emu/gme",
+      "gb_apu"
+    ],
+    "excluded_conditional_includes": [
+      "gme/blargg_config.h: config.h only with HAVE_CONFIG_H; not enabled by this target.",
+      "gme/blargg_source.h: BLARGG_SOURCE_BEGIN optional injection; not enabled.",
+      "gme/Blip_Buffer.cpp: BLARGG_ENABLE_OPTIMIZER optional injection; not enabled.",
+      "gb_apu/blargg/blip_buf.c: blargg_test.h only with BLARGG_TEST; not enabled."
+    ]
+  },
+  "patches": [
+    {
+      "file": "game-music-emu/gme/Nes_Apu.h",
+      "changes": [
+        "Add const active_channels host inspection without emulation advancement or IRQ acknowledgement; CPU read_status(time) samples time-1 and cannot be used at frame-relative time zero.",
+        "Add const dmc_playing playback inspection including the buffered byte and output shifter after the CPU-visible read counter reaches zero."
+      ]
+    },
+    {
+      "file": "gb_apu/gb_apu.c",
+      "changes": [
+        "high_pass: replace signed negative left shift and overflow-prone int intermediates with int64_t scaling/subtraction/product; preserve arithmetic-shift floor rounding using division.",
+        "apu_read_samples: compare disabled charge factor against 1 << CAPACITOR_SCALE, not CAPACITOR_SCALE.",
+        "apu_reset: clear both high-pass capacitors under GB_APU_HAS_MATH_H without recalculating filter coefficients.",
+        "PSG mixer: correct NR51 routing and NR50 volume nibble assignments to hardware high=left, low=right.",
+        "Wave mixer: use right_volume for every right-channel wave transition, not left_volume.",
+        "channel_sync_psg: apply initial amplitude, envelope, routing and channel-disable deltas at base_clock, not the next oscillator edge or arbitrary sync end; retain oscillator timer edges independently. Removes host-block-dependent envelope timing."
+      ]
+    },
+    {
+      "file": "gb_apu/blargg/blip_buf.c",
+      "changes": [
+        "blip_read_samples: replace negative signed left shift in the integrator high-pass step with bounded multiplication."
+      ]
+    }
+  ],
+  "gb_behavior": {
+    "models": "Distinct DMG/CGB reset wave-register defaults, active-wave-RAM access restrictions, DMG wave retrigger corruption, powered-off length writes and power-off length preservation; CGB exposes PCM12/PCM34. AGB API remains within the upstream core but is not a product model.",
+    "highpass": "GB_APU_HAS_MATH_H enables actual model capacitor filtering: DMG charge 0.999958, CGB 0.998943, sample coefficient pow(charge, clock/sample). Init selects NONE; Engine must explicitly select model filter off audio thread. Reset clears capacitor history locally. C blip_buf independently applies its fixed bass_shift=9 integrator high-pass.",
+    "equalization": "apu_set_bass and apu_set_treble are intentionally unavailable/no-ops with upstream C backend; no product controls should call them.",
+    "timing": "Engine must clock apu_frame_sequencer_clock externally (normal DIV falling-edge cadence every 8192 chip cycles). apu_end_frame clears synthesis clock offsets, not absolute channel timestamps; apu_update_timestamp is available for rebasing.",
+    "samples": "apu_clocks_needed, apu_samples_avaliable and apu_read_samples count interleaved stereo scalar samples, not frames; use even counts. Each C blip buffer allocates sampleRate/10 mono samples, requiring render chunks under capacity.",
+    "reset_wave": "Upstream hardware power-on wave-RAM register defaults are retained; Engine overwrites them with user semantic wave data. No commercial/game ROM or music samples are included.",
+    "accuracy": "Upstream retains an unresolved envelope timer wrap comment; no claim of cycle-perfect or analog-identical hardware accuracy. Save states omit filters/resampler/type/settings and are not suitable for semantic product persistence.",
+    "allocation": "apu_init checks calloc and blip wrapper allocation and cleans partial state via apu_quit; wrapper handles either mono-buffer allocation failing; blip_new handles malloc failure. No local allocation patch required."
+  },
+  "integration": {
+    "core": "score_emulation_apu",
+    "native_sources": "EMULATION_APU_NATIVE_SOURCES (explicit native family filenames)",
+    "tests": "Root family loop registers Emulation_ApuEngineTest against score_emulation_apu; host-only Emulation_ApuDocumentTest also links score_addon_emulation."
+  }
+}

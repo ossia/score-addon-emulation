@@ -1,0 +1,9 @@
+{
+  "name": "Emulation",
+  "raw_name": "score-addon-emulation",
+  "version": "0.1",
+  "kind": "addon",
+  "short": "Native emulated synthesizers, console APUs and Wurlitzer",
+  "long": "Opale (OPL2/OPL3), AYstral (AY/YM/Sega PSG), SIDérant (SID 6581/8580), LAdrenaline (Roland LA / MT-32), Wurlie (Wurlitzer 200A), SiCC (SCC/SCC+/HuC6280 wavetable), and Consolated (NES/Game Boy APUs). Native score controls, presets, automation and global volume; no hardware-panel replicas. Only LAdrenaline requires user-provided compatible control and PCM ROMs; no manufacturer ROMs or third-party banks are bundled.",
+  "key": "84a2d329-b4c6-413d-9c89-5f17031baed4"
+}

@@ -1,0 +1,12 @@
+[submodule "3rdparty/libADLMIDI"]
+	path = 3rdparty/libADLMIDI
+	url = https://github.com/Wohlstand/libADLMIDI.git
+[submodule "3rdparty/libresidfp"]
+	path = 3rdparty/libresidfp
+	url = https://github.com/libsidplayfp/libresidfp.git
+[submodule "3rdparty/emu2149"]
+	path = 3rdparty/emu2149
+	url = https://github.com/digital-sound-antiques/emu2149.git
+[submodule "3rdparty/Nuked-PSG"]
+	path = 3rdparty/Nuked-PSG
+	url = https://github.com/nukeykt/Nuked-PSG.git

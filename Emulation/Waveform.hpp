@@ -7,13 +7,6 @@
 
 namespace Emulation::Waveform
 {
-inline std::optional<double> number(const ossia::value& value) noexcept
-{
-  if(const auto* integer = value.target<int>()) return *integer;
-  if(const auto* real = value.target<float>(); real && std::isfinite(*real)) return *real;
-  return std::nullopt;
-}
-
 inline ossia::value triangle()
 {
   return Process::wavetableToValue(Process::makeTriangleWavetable());

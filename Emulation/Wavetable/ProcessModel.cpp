@@ -108,7 +108,7 @@ void ProcessModel::loadPreset(const Process::Preset& preset) {
       values[c] = JsonValue{entry[1]}.to<ossia::value>();
       if(c >= ChannelBase && (c - ChannelBase) % ChannelStride == Level) {
         const int ch = (c - ChannelBase) / ChannelStride;
-        const auto value = Waveform::number(values[c]);
+        const auto value = Process::waveformNumber(values[c]);
         if(!value) throw std::runtime_error("Invalid wavetable preset level.");
         values[c] = float(*value * destinationLevels[ch] / sourceLevels[ch]);
       }

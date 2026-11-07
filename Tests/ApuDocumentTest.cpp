@@ -268,7 +268,7 @@ TEST_CASE("APU offered hardware domains reject invalid values without altering a
       }
     }
     const auto saved=p.stateData();
-    control(p,Wave).setValue(std::vector<ossia::value>(31,ossia::value{0}));CHECK(p.stateData()==saved);
+    control(p,Wave).setValue(std::vector<ossia::value>(31,ossia::value{std::string{"x"}}));CHECK(p.stateData()==saved);
     control(p,Clock).setValue(1);CHECK(p.stateData()==saved);
     const auto asset=p.dmc();CHECK_FALSE(p.importDmcBytes({}));CHECK(p.dmc()==asset);
     CHECK_FALSE(p.importDmcBytes(QByteArray(16385,'x')));CHECK(p.dmc()==asset);

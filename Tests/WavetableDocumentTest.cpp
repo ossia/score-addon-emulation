@@ -674,16 +674,34 @@ TEST_CASE("Chip waveform ports reject invalid samples without splitting value an
         Emulation::Waveform::triangle(), 256, "Wave", Id<Process::Port>{0}, nullptr)};
     inlet->setWaveform(drawnWave());
     const auto original = inlet->value();
+    const auto withSample = [&](float sample) {
+      auto value = original;
+      (*(*value.target<std::vector<ossia::value>>())[0].target<std::vector<ossia::value>>())[13] = sample;
+      return value;
+    };
     for(float invalid : {2.f, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity()}) {
       auto data = drawnWave(); data.samples[13] = invalid;
       inlet->setWaveform(data);
       CHECK(inlet->value() == original); CHECK(inlet->wavetable() == drawnWave());
-      auto value = original;
-      (*(*value.target<std::vector<ossia::value>>())[0].target<std::vector<ossia::value>>())[13] = invalid;
-      inlet->setValue(value);
+    }
+    // A value is read as execution reads it: what is not a number is
+    // rejected, a sample out of range is clamped onto the chip's levels.
+    for(float invalid : {std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity()}) {
+      inlet->setValue(withSample(invalid));
       CHECK(inlet->value() == original); CHECK(inlet->wavetable() == drawnWave());
     }
+    inlet->setValue(std::vector<ossia::value>{std::string{"a"}, 1.f});
+    CHECK(inlet->value() == original);
+    inlet->setValue(withSample(2.f));
+    auto clamped = drawnWave(); clamped.samples[13] = 1.f;
+    for(float& sample : clamped.samples) sample = Process::quantizeSample(sample, 256);
+    CHECK(inlet->wavetable() == clamped);
+    CHECK(Process::wavetableFromValue(inlet->value()) == inlet->wavetable());
+    // A flat list of another size is one cycle resampled to the wave RAM.
     inlet->setValue(std::vector<ossia::value>{0.f, 1.f});
+    CHECK(inlet->wavetable().frameSize == 32); CHECK(inlet->wavetable().frameCount() == 1);
+    CHECK(inlet->wavetable().samples[16] == 1.f);
+    inlet->setWaveform(drawnWave());
     CHECK(inlet->value() == original);
     inlet->setWaveform(Process::makeTriangleWavetable(64));
     CHECK(inlet->value() == original);

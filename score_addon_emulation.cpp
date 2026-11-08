@@ -10,9 +10,14 @@
 #include <Emulation/Sid/Executor/Component.hpp>
 #include <Emulation/Sid/Layer.hpp>
 #include <Emulation/Sid/ProcessFactory.hpp>
+#if EMULATION_HAS_LA
 #include <Emulation/La/Executor/Component.hpp>
 #include <Emulation/La/Layer.hpp>
 #include <Emulation/La/ProcessFactory.hpp>
+#define EMULATION_LA(factory) Emulation::La::factory,
+#else
+#define EMULATION_LA(factory)
+#endif
 #include <Emulation/Wurli/Executor/Component.hpp>
 #include <Emulation/Wurli/Layer.hpp>
 #include <Emulation/Wurli/ProcessFactory.hpp>
@@ -35,17 +40,17 @@ std::vector<score::InterfaceBase*> score_addon_emulation::factories(
       score::ApplicationContext,
       FW<Process::ProcessModelFactory, Emulation::Opl::ProcessFactory,
          Emulation::Psg::ProcessFactory, Emulation::Sid::ProcessFactory,
-         Emulation::La::ProcessFactory, Emulation::Wurli::ProcessFactory,
+         EMULATION_LA(ProcessFactory) Emulation::Wurli::ProcessFactory,
          Emulation::Wavetable::ProcessFactory, Emulation::Apu::ProcessFactory>,
       FW<Process::LayerFactory, Emulation::Opl::LayerFactory,
          Emulation::Psg::LayerFactory, Emulation::Sid::LayerFactory,
-         Emulation::La::LayerFactory, Emulation::Wurli::LayerFactory,
+         EMULATION_LA(LayerFactory) Emulation::Wurli::LayerFactory,
          Emulation::Wavetable::LayerFactory, Emulation::Apu::LayerFactory>,
       FW<Library::LibraryInterface, Emulation::Opl::LibraryHandler>,
       FW<Process::ProcessDropHandler, Emulation::Opl::DropHandler>,
       FW<Execution::ProcessComponentFactory, Emulation::Opl::Executor::ComponentFactory,
          Emulation::Psg::Executor::ComponentFactory, Emulation::Sid::Executor::ComponentFactory,
-         Emulation::La::Executor::ComponentFactory, Emulation::Wurli::Executor::ComponentFactory,
+         EMULATION_LA(Executor::ComponentFactory) Emulation::Wurli::Executor::ComponentFactory,
          Emulation::Wavetable::Executor::ComponentFactory, Emulation::Apu::Executor::ComponentFactory>>(
       ctx, key);
 }

@@ -152,6 +152,8 @@ Both families use bounded 8192-event token storage and preserve earlier render w
 
 ## LAdrenaline — Roland LA / MT-32
 
+LAdrenaline is not built for now; configure with `-DEMULATION_ENABLE_LA=ON` to add it back.
+
 Add **LAdrenaline**, connect MIDI and stereo audio, and select a matching **control ROM and PCM ROM** on its ROM page. Munt covers MT-32 old/new and CM-32L-compatible ROM pairs within one process; this is not a CM-32P or full CM-64 emulator. No firmware is included, downloaded, or automatically copied into projects.
 
 - ROMs are identified by content SHA-1 and role, not filename. Unsupported images, incompatible pairs, changed expected hashes, and missing files produce explicit diagnostics. Engine creation, ROM I/O and heavy configuration happen off audio.

@@ -48,6 +48,7 @@ GoatTracker import assessment used [format documentation](https://github.com/lea
 
 ### Roland LA
 
+- LAdrenaline is not built for now: `EMULATION_ENABLE_LA` (CMake, default `OFF`) adds its core, process and tests back. Its code and presets stay in the tree.
 - Upstream: [munt/mt32emu](https://github.com/munt/munt/tree/6e7c01fba7e1d50c8fa705834889fd0eac136075/mt32emu), revision `6e7c01fba7e1d50c8fa705834889fd0eac136075`, library version 2.8.3.
 - `3rdparty/munt/mt32emu` is a curated source snapshot, not an unexpanded submodule. `cmake/La.cmake` selects the headless C++ synthesizer and internal resampler; no frontends, fake-ROM test assets or ROM images are included.
 - Library code is LGPL-2.1-or-later; the SHA-1 implementation carries its BSD-3-Clause notice. `AUTHORS.txt`, `COPYING.txt`, `COPYING.LESSER.txt` and source notices are retained and registered with score.

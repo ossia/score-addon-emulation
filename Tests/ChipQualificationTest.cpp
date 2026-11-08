@@ -3,7 +3,9 @@
 #include <Emulation/Opl/Executor/Node.hpp>
 #include <Emulation/Psg/Executor/Node.hpp>
 #include <Emulation/Sid/Executor/Node.hpp>
+#if EMULATION_HAS_LA
 #include <Emulation/La/Executor/Node.hpp>
+#endif
 #include <Emulation/Wurli/Executor/Node.hpp>
 #include <Process/ExecutionTransaction.hpp>
 #include <Execution/DocumentPlugin.hpp>
@@ -424,11 +426,13 @@ TEST_CASE("Chip short loop slices retain full host output and earlier samples", 
       REQUIRE(node->ready());
       checkSlices(node, true);
     }
+#if EMULATION_HAS_LA
     {
       INFO("Roland LA without ROMs");
       auto node = std::make_shared<Emulation::La::Executor::Node>(state);
       CHECK_FALSE(node->ready());
       checkSlices(node, false);
     }
+#endif
   });
 }

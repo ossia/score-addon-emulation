@@ -3,5 +3,7 @@ Commit: e1735c83707e6ee739a123476344659f7fa9fb18
 Resolved via: gh api repos/digital-sound-antiques/emu2212/commits/HEAD
 Curated upstream files: emu2212.c, emu2212.h, LICENSE
 License: MIT (retained verbatim)
-Local modifications: none.
+Local modifications: emu2212.c update_output() halves each channel output
+with a division instead of an arithmetic right shift, so a stopped channel
+decays to 0 from below as it does from above instead of holding -1.
 No ROM, sample, firmware or manufacturer patch assets.

@@ -193,7 +193,9 @@ update_output (SCC * scc)
         scc->ch_out[i] += (scc->volume[i] * scc->wave[i][scc->phase[i]]) & 0xfff0;
     }
 
-    scc->ch_out[i] >>= 1;
+    /* Halve toward zero: an arithmetic shift leaves a negative output at -1
+       forever once the channel stops, a constant DC offset after note-off. */
+    scc->ch_out[i] /= 2;
   }
 
 }

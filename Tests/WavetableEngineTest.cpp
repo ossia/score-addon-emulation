@@ -6,6 +6,7 @@
 #include <array>
 #include <cmath>
 #include <limits>
+#include <utility>
 #include <vector>
 namespace {
 using namespace Emulation::Wavetable;
@@ -241,10 +242,7 @@ TEST_CASE("Wavetable mono lines retain original channel expression and held-note
       send(e, {0x81, 60, 0}); CHECK(e.voiceNote(0) == 60);
       send(e, {0xb0, 7, 0});
       const auto muted = render(e, 2048);
-      // SCC's integer output filter can retain a constant one-step DC residue.
-      // Channel volume must remove the tone, not change the core's DC behavior.
-      const auto [quietLo, quietHi] = std::minmax_element(muted.begin() + 1024, muted.end());
-      CHECK(*quietHi - *quietLo < 1e-5);
+      CHECK(std::all_of(muted.begin() + 1024, muted.end(), [](double x) { return x == 0.; }));
       send(e, {0xb0, 64, 127}); send(e, {0x80, 60, 0});
       send(e, {0xb1, 64, 0}); CHECK(e.voiceNote(0) == 60);
       send(e, {0xb0, 64, 0}); CHECK(e.activeVoices() == 0);
@@ -272,4 +270,19 @@ TEST_CASE("Wavetable mode changes drain stale note-offs and respect reserved mon
     CHECK(e.activeVoices() == 4);
     send(e, {0x80, 64, 0}); CHECK(e.activeVoices() == 0);
   }
+}
+
+TEST_CASE("SCC channels fall to exact silence within a few buffers of a note-off", "[emulation][wavetable]") {
+  for(auto model : {Model::Scc, Model::SccPlus})
+    for(auto [rate, block] : {std::pair{44100., std::size_t(512)}, std::pair{48000., std::size_t(8192)}}) {
+      CAPTURE(int(model), rate, block);
+      Engine e{rate, settings(model)};
+      send(e, {0x90, 69, 127});
+      const auto sound = render(e, 4 * block, block);
+      REQUIRE(std::any_of(sound.begin(), sound.end(), [](double x) { return x != 0.; }));
+      send(e, {0x80, 69, 0});
+      render(e, 2 * block, block);
+      const auto tail = render(e, 2 * block, block);
+      CHECK(std::all_of(tail.begin(), tail.end(), [](double x) { return x == 0.; }));
+    }
 }

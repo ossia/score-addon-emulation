@@ -1,11 +1,13 @@
 {
   "format": 1,
-  "scope": "Headless source-only NES and Game Boy APU cores; no player, CPU, ROM/music loader, game asset, upstream build file or binary.",
+  "scope": "Headless NES and Game Boy APU cores, built from the files listed here out of the two submodules; no player, CPU, ROM/music loader, game asset, upstream build file or binary.",
   "audit": "Pinned recursive GitHub Git Trees and Git Blobs API; audited transitive includes, source license notices, model branches, filter arithmetic and allocation cleanup. Build/runtime evidence is recorded in the project changelog and task ledger.",
   "dependencies": [
     {
       "repository": "https://github.com/libgme/game-music-emu",
       "revision": "f68963b1de0633149b05732113d3c3113c6f63a1",
+      "fork": "https://github.com/jcelerier/game-music-emu",
+      "fork_branch": "ossia-2026-11",
       "tree_api": "https://api.github.com/repos/libgme/game-music-emu/git/trees/f68963b1de0633149b05732113d3c3113c6f63a1?recursive=1",
       "directory": "game-music-emu",
       "license": "LGPL-2.1-or-later",
@@ -88,6 +90,8 @@
     {
       "repository": "https://github.com/ITotalJustice/gb_apu",
       "revision": "3d73d0df027a82d854cacd72a179c2d6a1a9703e",
+      "fork": "https://github.com/jcelerier/gb_apu",
+      "fork_branch": "ossia-2026-11",
       "tree_api": "https://api.github.com/repos/ITotalJustice/gb_apu/git/trees/3d73d0df027a82d854cacd72a179c2d6a1a9703e?recursive=1",
       "directory": "gb_apu",
       "license": "MIT",
@@ -172,7 +176,8 @@
       "changes": [
         "Add const active_channels host inspection without emulation advancement or IRQ acknowledgement; CPU read_status(time) samples time-1 and cannot be used at frame-relative time zero.",
         "Add const dmc_playing playback inspection including the buffered byte and output shifter after the CPU-visible read counter reaches zero."
-      ]
+      ],
+      "applied_on": "the fork branch, one commit per change"
     },
     {
       "file": "gb_apu/gb_apu.c",
@@ -183,13 +188,15 @@
         "PSG mixer: correct NR51 routing and NR50 volume nibble assignments to hardware high=left, low=right.",
         "Wave mixer: use right_volume for every right-channel wave transition, not left_volume.",
         "channel_sync_psg: apply initial amplitude, envelope, routing and channel-disable deltas at base_clock, not the next oscillator edge or arbitrary sync end; retain oscillator timer edges independently. Removes host-block-dependent envelope timing."
-      ]
+      ],
+      "applied_on": "the fork branch, one commit per change"
     },
     {
       "file": "gb_apu/blargg/blip_buf.c",
       "changes": [
         "blip_read_samples: replace negative signed left shift in the integrator high-pass step with bounded multiplication."
-      ]
+      ],
+      "applied_on": "the fork branch, one commit per change"
     }
   ],
   "gb_behavior": {

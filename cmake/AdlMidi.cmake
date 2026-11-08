@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Explicit source selection keeps upstream's global flags/options and bundled
-# banks out of score. The submodule itself is intentionally unmodified.
+# banks out of score. Submodule: jcelerier/libADLMIDI ossia-2026-11, which is
+# upstream Wohlstand/libADLMIDI 44f38c9bb2aabc1c09e9c6060ce0dbdc2fe40bde, unmodified.
 set(EMULATION_ADLMIDI_DIR "${CMAKE_CURRENT_LIST_DIR}/../3rdparty/libADLMIDI")
 if(NOT EXISTS "${EMULATION_ADLMIDI_DIR}/include/adlmidi.h")
-  message(FATAL_ERROR "Emulation requires its pinned libADLMIDI submodule. Run git submodule update --init --recursive in score-addon-emulation.")
+  message(FATAL_ERROR "Emulation requires its libADLMIDI submodule. Run git submodule update --init --recursive in score-addon-emulation.")
 endif()
 
 include("${EMULATION_ADLMIDI_DIR}/src/models/opl_models.cmake")
@@ -51,26 +52,33 @@ endif()
 
 if(COMMAND score_register_license)
   score_register_license(libADLMIDI
-    URL "https://github.com/Wohlstand/libADLMIDI"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11"
+    HEADER "GPL-3.0-or-later"
     NOTICES "${EMULATION_ADLMIDI_DIR}/src/adlmidi.cpp"
     FILES "${EMULATION_ADLMIDI_DIR}/LICENSE.txt")
   score_register_license(libADLMIDI_chip_interfaces
-    URL "https://github.com/Wohlstand/libADLMIDI"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11"
+    HEADER "LGPL-2.1-or-later"
     NOTICES "${EMULATION_ADLMIDI_DIR}/src/chips/ymfm_opl3.cpp"
     FILES "${EMULATION_ADLMIDI_DIR}/LICENSE.LGPL-2.1.txt")
   score_register_license(ymfm
-    URL "https://github.com/aaronsgiles/ymfm"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11/src/chips/ymfm"
+    HEADER "BSD-3-Clause"
     FILES "${EMULATION_ADLMIDI_DIR}/src/chips/ymfm/LICENSE")
   score_register_license(wopl
-    URL "https://github.com/Wohlstand/libADLMIDI"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11"
+    HEADER "MIT"
     FILES "${EMULATION_ADLMIDI_DIR}/src/wopl/LICENSE.txt")
   score_register_license(opl_volume_models
-    URL "https://github.com/Wohlstand/libADLMIDI"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11"
+    HEADER "MIT"
     FILES "${EMULATION_ADLMIDI_DIR}/src/models/LICENSE.txt")
   score_register_license(libADLMIDI_fixed_storage
-    URL "https://github.com/Wohlstand/libADLMIDI"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11"
+    HEADER "BSL-1.0"
     FILES "${EMULATION_ADLMIDI_DIR}/src/structures/LICENSE")
   score_register_license(libADLMIDI_file_and_allocator_helpers
-    URL "https://github.com/Wohlstand/libADLMIDI"
+    URL "https://github.com/jcelerier/libADLMIDI/tree/ossia-2026-11"
+    HEADER "MIT"
     FILES "${EMULATION_ADLMIDI_DIR}/src/midiseq/LICENSE.txt")
 endif()

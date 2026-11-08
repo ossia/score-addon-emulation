@@ -1,14 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# munt/munt 6e7c01fba7e1d50c8fa705834889fd0eac136075, mt32emu 2.8.3.
-# Local extension: timestamped Synth::playMsgOnPart uses the native short-message
-# queue and renderer's abort/retry handling without changing part assignments.
-# Queued coalesced-key release ignores pedal only for the retriggered melodic
-# key; part CC120 exposes native allSoundOff decay without a global reset.
+# Submodule 3rdparty/munt: jcelerier/munt ossia-2026-11, upstream munt/munt
+# 6e7c01fba7e1d50c8fa705834889fd0eac136075 (mt32emu 2.8.3) plus the score
+# extensions to Synth and Part: timestamped part-addressed messages, part CC120
+# all-sound-off decay and coalesced melodic-key release.
 # Headless C++ engine + built-in resampler only; no frontends, ROMs or fake-ROM tests.
 get_filename_component(EMULATION_LA_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(EMULATION_MUNT_DIR "${EMULATION_LA_ROOT}/3rdparty/munt/mt32emu")
 if(NOT EXISTS "${EMULATION_MUNT_DIR}/src/Synth.cpp")
-  message(FATAL_ERROR "Emulation LA requires the pinned 3rdparty/munt/mt32emu sources.")
+  message(FATAL_ERROR "Emulation LA requires the 3rdparty/munt submodule. Run git submodule update --init --recursive.")
 endif()
 function(emulation_configure_munt)
   include("${EMULATION_MUNT_DIR}/cmake/project_data.cmake")
@@ -51,7 +50,8 @@ if(UNIX)
 endif()
 if(COMMAND score_register_license)
   score_register_license(munt
-    URL "https://github.com/munt/munt/tree/6e7c01fba7e1d50c8fa705834889fd0eac136075/mt32emu"
+    URL "https://github.com/jcelerier/munt/tree/ossia-2026-11/mt32emu"
+    HEADER "LGPL-2.1-or-later; SHA-1: BSD-3-Clause"
     NOTICES "${EMULATION_MUNT_DIR}/src/sha1/sha1.h"
     FILES "${EMULATION_MUNT_DIR}/AUTHORS.txt" "${EMULATION_MUNT_DIR}/COPYING.txt" "${EMULATION_MUNT_DIR}/COPYING.LESSER.txt")
 endif()

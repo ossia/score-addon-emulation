@@ -119,4 +119,15 @@ if(EMULATION_BUILD_TESTS)
       "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}"
       "${SCORE_ROOT_SOURCE_DIR}/tests/fixtures")
   endif()
+  # The About dialog's license list only exists when building inside score.
+  if(NOT EMULATION_CORE_ONLY AND COMMAND score_add_test AND COMMAND score_generate_licenses)
+    score_add_test(Emulation_RegistryTest
+      SOURCES Tests/RegistryTest.cpp APP
+      PLUGINS score_plugin_engine score_plugin_scenario score_lib_process
+      LIBS score_addon_emulation)
+    target_compile_definitions(Emulation_RegistryTest PRIVATE
+      EMULATION_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+    target_include_directories(Emulation_RegistryTest PRIVATE
+      "${SCORE_ROOT_SOURCE_DIR}/tests/fixtures")
+  endif()
 endif()

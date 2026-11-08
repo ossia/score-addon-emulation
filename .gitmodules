@@ -1,12 +1,41 @@
 [submodule "3rdparty/libADLMIDI"]
 	path = 3rdparty/libADLMIDI
-	url = https://github.com/Wohlstand/libADLMIDI.git
+	url = https://github.com/jcelerier/libADLMIDI.git
+	branch = ossia-2026-11
 [submodule "3rdparty/libresidfp"]
 	path = 3rdparty/libresidfp
-	url = https://github.com/libsidplayfp/libresidfp.git
+	url = https://github.com/jcelerier/libresidfp.git
+	branch = ossia-2026-11
 [submodule "3rdparty/emu2149"]
 	path = 3rdparty/emu2149
-	url = https://github.com/digital-sound-antiques/emu2149.git
+	url = https://github.com/jcelerier/emu2149.git
+	branch = ossia-2026-11
 [submodule "3rdparty/Nuked-PSG"]
 	path = 3rdparty/Nuked-PSG
-	url = https://github.com/nukeykt/Nuked-PSG.git
+	url = https://github.com/jcelerier/Nuked-PSG.git
+	branch = ossia-2026-11
+[submodule "3rdparty/munt"]
+	path = 3rdparty/munt
+	url = https://github.com/jcelerier/munt.git
+	branch = ossia-2026-11
+[submodule "3rdparty/retromulator"]
+	path = 3rdparty/retromulator
+	url = https://github.com/jcelerier/retromulator.git
+	branch = ossia-2026-11
+	shallow = true
+[submodule "3rdparty/apu/game-music-emu"]
+	path = 3rdparty/apu/game-music-emu
+	url = https://github.com/jcelerier/game-music-emu.git
+	branch = ossia-2026-11
+[submodule "3rdparty/apu/gb_apu"]
+	path = 3rdparty/apu/gb_apu
+	url = https://github.com/jcelerier/gb_apu.git
+	branch = ossia-2026-11
+[submodule "3rdparty/emu2212"]
+	path = 3rdparty/emu2212
+	url = https://github.com/jcelerier/emu2212.git
+	branch = ossia-2026-11
+[submodule "3rdparty/libvgm"]
+	path = 3rdparty/libvgm
+	url = https://github.com/jcelerier/libvgm.git
+	branch = ossia-2026-11

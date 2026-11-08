@@ -7,7 +7,7 @@ Each ow*.h header is retained verbatim, including its upstream GPL v3 / Rust
 openwurli-dsp 0.9.0 port attribution. The upstream files do not contain individual
 copyright-holder lines; none have been invented here.
 
-Source selection: all sixteen ow*.h model headers; no device.h/device.cpp,
+Source selection: the build uses the sixteen ow*.h model headers only; no device.h/device.cpp,
 synthLib, JUCE, UI, assets/parameter descriptions, other engines or plugins.
 The score Engine.cpp is a separately marked adaptation of the pinned device.cpp
 signal chain, with native score lifecycle, MIDI and allocation ownership.

@@ -1,14 +1,17 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# libgme/game-music-emu f68963b1de0633149b05732113d3c3113c6f63a1 (LGPL-2.1-or-later).
-# ITotalJustice/gb_apu 3d73d0df027a82d854cacd72a179c2d6a1a9703e (MIT).
-# Source-only chip cores: no music player, CPU, ROM loader, game data or frontends.
-# Exact upstream blobs and local correctness patches: 3rdparty/apu/sources.json.
+# Submodules on the jcelerier forks' ossia-2026-11 branches:
+# 3rdparty/apu/game-music-emu: libgme/game-music-emu f68963b1de0633149b05732113d3c3113c6f63a1
+#   plus two Nes_Apu inspection accessors (LGPL-2.1-or-later).
+# 3rdparty/apu/gb_apu: ITotalJustice/gb_apu 3d73d0df027a82d854cacd72a179c2d6a1a9703e
+#   plus filter, routing, timing and UB fixes (MIT).
+# Only the chip cores are built: no music player, CPU, ROM loader, game data or frontends.
+# Upstream blobs and behaviour notes: 3rdparty/apu/sources.json.
 get_filename_component(EMULATION_APU_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(EMULATION_NES_APU_DIR "${EMULATION_APU_ROOT}/3rdparty/apu/game-music-emu")
 set(EMULATION_GB_APU_DIR "${EMULATION_APU_ROOT}/3rdparty/apu/gb_apu")
 if(NOT EXISTS "${EMULATION_NES_APU_DIR}/gme/Nes_Apu.cpp" OR
     NOT EXISTS "${EMULATION_GB_APU_DIR}/gb_apu.c")
-  message(FATAL_ERROR "Emulation APU requires the curated pinned 3rdparty/apu sources.")
+  message(FATAL_ERROR "Emulation APU requires the 3rdparty/apu/game-music-emu and 3rdparty/apu/gb_apu submodules. Run git submodule update --init --recursive.")
 endif()
 add_library(score_emulation_apu STATIC
   "${EMULATION_APU_ROOT}/Emulation/Apu/Engine.cpp"
@@ -34,13 +37,15 @@ if(UNIX)
 endif()
 if(COMMAND score_register_license)
   score_register_license(game_music_emu_nes_apu
-    URL "https://github.com/libgme/game-music-emu/tree/f68963b1de0633149b05732113d3c3113c6f63a1"
+    URL "https://github.com/jcelerier/game-music-emu/tree/ossia-2026-11"
+    HEADER "LGPL-2.1-or-later"
     NOTICES "${EMULATION_NES_APU_DIR}/gme/Nes_Apu.cpp"
       "${EMULATION_NES_APU_DIR}/gme/Nes_Oscs.cpp"
       "${EMULATION_NES_APU_DIR}/gme/Blip_Buffer.cpp"
     FILES "${EMULATION_NES_APU_DIR}/license.txt")
   score_register_license(gb_apu
-    URL "https://github.com/ITotalJustice/gb_apu/tree/3d73d0df027a82d854cacd72a179c2d6a1a9703e"
+    URL "https://github.com/jcelerier/gb_apu/tree/ossia-2026-11"
+    HEADER "MIT; blip_buf: MIT"
     NOTICES "${EMULATION_GB_APU_DIR}/blargg/blip_buf.c"
     FILES "${EMULATION_GB_APU_DIR}/LICENCE.txt")
 endif()

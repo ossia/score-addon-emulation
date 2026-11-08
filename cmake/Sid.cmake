@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# libresidfp fa9dd25d16863493b36b6459128d6583fb3d179f, GPL-2.0-or-later.
+# Submodule: jcelerier/libresidfp ossia-2026-11, which is upstream libsidplayfp/libresidfp
+# fa9dd25d16863493b36b6459128d6583fb3d179f, unmodified (GPL-2.0-or-later).
 # Select the chip core and scalar resampler, not autotools, players, tests or assets.
 get_filename_component(EMULATION_SID_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(EMULATION_RESIDFP_DIR "${EMULATION_SID_ROOT}/3rdparty/libresidfp")
 if(NOT EXISTS "${EMULATION_RESIDFP_DIR}/src/SID.cpp")
-  message(FATAL_ERROR "Emulation SID requires its pinned 3rdparty/libresidfp submodule.")
+  message(FATAL_ERROR "Emulation SID requires its 3rdparty/libresidfp submodule. Run git submodule update --init --recursive.")
 endif()
 function(emulation_configure_residfp)
   set(RESIDFP_BRANCH_HINTS 0)
@@ -53,7 +54,8 @@ if(UNIX)
 endif()
 if(COMMAND score_register_license)
   score_register_license(libresidfp
-    URL "https://github.com/libsidplayfp/libresidfp"
+    URL "https://github.com/jcelerier/libresidfp/tree/ossia-2026-11"
+    HEADER "GPL-2.0-or-later"
     NOTICES "${EMULATION_RESIDFP_DIR}/src/SID.cpp"
     FILES "${EMULATION_RESIDFP_DIR}/COPYING")
 endif()

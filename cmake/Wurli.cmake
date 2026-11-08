@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Curated, unmodified OpenWurli DSP headers from reales/retromulator:
-# bb7ffd871c7c227aed0671ba39df8188a7a4697d (GPL v3).
-# No synthLib device, JUCE, editor, samples, ROMs or manufacturer patches.
+# Submodule 3rdparty/retromulator: jcelerier/retromulator ossia-2026-11, upstream
+# reales/retromulator bb7ffd871c7c227aed0671ba39df8188a7a4697d (GPL v3), unmodified.
+# Only the ow*.h headers of source/openWurliLib are used: no synthLib device,
+# JUCE, editor, other engines, samples, ROMs or manufacturer patches.
 set(EMULATION_WURLI_ROOT "${CMAKE_CURRENT_LIST_DIR}/..")
-set(EMULATION_OPENWURLI_DIR "${EMULATION_WURLI_ROOT}/3rdparty/openwurli")
+set(EMULATION_RETROMULATOR_DIR "${EMULATION_WURLI_ROOT}/3rdparty/retromulator")
+set(EMULATION_OPENWURLI_DIR "${EMULATION_RETROMULATOR_DIR}/source/openWurliLib")
 if(NOT EXISTS "${EMULATION_OPENWURLI_DIR}/owVoice.h")
-  message(FATAL_ERROR "Missing the curated pinned OpenWurli DSP source in 3rdparty/openwurli.")
+  message(FATAL_ERROR "Emulation Wurli requires the 3rdparty/retromulator submodule. Run git submodule update --init --recursive.")
 endif()
 add_library(score_emulation_wurli STATIC "${EMULATION_WURLI_ROOT}/Emulation/Wurli/Engine.cpp")
 target_compile_features(score_emulation_wurli PUBLIC cxx_std_20)
@@ -28,6 +30,8 @@ set(EMULATION_WURLI_NATIVE_SOURCES
   "${EMULATION_WURLI_ROOT}/Emulation/Wurli/Executor/Node.cpp")
 if(COMMAND score_register_license)
   score_register_license(OpenWurli
-    URL "https://github.com/reales/retromulator/tree/bb7ffd871c7c227aed0671ba39df8188a7a4697d/source/openWurliLib"
-    FILES "${EMULATION_OPENWURLI_DIR}/NOTICE.txt" "${EMULATION_OPENWURLI_DIR}/LICENSE.txt")
+    URL "https://github.com/jcelerier/retromulator/tree/ossia-2026-11/source/openWurliLib"
+    HEADER "GPL-3.0-only"
+    FILES "${EMULATION_WURLI_ROOT}/3rdparty/notices/OpenWurli-NOTICE.txt"
+      "${EMULATION_RETROMULATOR_DIR}/LICENSE.txt")
 endif()

@@ -50,10 +50,32 @@ file(COPY "${dep}/src/" DESTINATION "${dest}/src"
   FILES_MATCHING PATTERN "*.h" PATTERN "*.cpp" PATTERN "siddefs-fp.h.in"
   PATTERN "residfp" EXCLUDE PATTERN "State.cpp" EXCLUDE PATTERN "test.cpp" EXCLUDE)
 file(COPY "${dep}/src/residfp/residfp_defs.h" DESTINATION "${dest}/src/residfp")
-foreach(dependency IN ITEMS munt openwurli emu2212 huc6280 apu)
-  # These directories are already curated source-only snapshots, not full checkouts.
-  file(COPY "${root}/3rdparty/${dependency}" DESTINATION "${stage}/3rdparty")
+file(COPY "${root}/3rdparty/munt/mt32emu" DESTINATION "${stage}/3rdparty/munt"
+  PATTERN ".git*" EXCLUDE PATTERN "test" EXCLUDE)
+set(dep "${root}/3rdparty/retromulator")
+set(dest "${stage}/3rdparty/retromulator")
+file(COPY "${dep}/LICENSE.txt" DESTINATION "${dest}")
+file(GLOB headers "${dep}/source/openWurliLib/ow*.h")
+file(COPY ${headers} DESTINATION "${dest}/source/openWurliLib")
+file(COPY "${root}/3rdparty/emu2212/emu2212.c" "${root}/3rdparty/emu2212/emu2212.h"
+  "${root}/3rdparty/emu2212/LICENSE" DESTINATION "${stage}/3rdparty/emu2212")
+file(COPY "${root}/3rdparty/libvgm/emu/cores/c6280_mame.c"
+  DESTINATION "${stage}/3rdparty/libvgm/emu/cores")
+set(dep "${root}/3rdparty/apu/game-music-emu")
+set(dest "${stage}/3rdparty/apu/game-music-emu")
+file(COPY "${dep}/license.txt" DESTINATION "${dest}")
+foreach(source IN ITEMS Nes_Apu.cpp Nes_Apu.h Nes_Oscs.cpp Nes_Oscs.h Blip_Buffer.cpp
+    Blip_Buffer.h blargg_common.h blargg_config.h blargg_source.h)
+  file(COPY "${dep}/gme/${source}" DESTINATION "${dest}/gme")
 endforeach()
+set(dep "${root}/3rdparty/apu/gb_apu")
+set(dest "${stage}/3rdparty/apu/gb_apu")
+file(COPY "${dep}/LICENCE.txt" "${dep}/gb_apu.c" "${dep}/gb_apu.h" DESTINATION "${dest}")
+foreach(source IN ITEMS blip_buf.c blip_buf.h blip_wrap.c blip_wrap.h)
+  file(COPY "${dep}/blargg/${source}" DESTINATION "${dest}/blargg")
+endforeach()
+file(COPY "${root}/3rdparty/apu/sources.json" DESTINATION "${stage}/3rdparty/apu")
+file(COPY "${root}/3rdparty/notices" DESTINATION "${stage}/3rdparty")
 execute_process(COMMAND "${CMAKE_COMMAND}" -E tar cf
     "${root}/score-addon-emulation.zip" --format=zip score-addon-emulation
     WORKING_DIRECTORY "${root}/release" COMMAND_ERROR_IS_FATAL ANY)

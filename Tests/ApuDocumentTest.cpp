@@ -823,47 +823,19 @@ TEST_CASE("APU live native preset cycling preserves sample bindings during MIDI"
       }
       REQUIRE(p.error().isEmpty());
     }
-    // The stock menu runs a nested event loop: library scanning may add a
-    // preset while its actions are visible. The chosen action must retain its
-    // own preset even when the shared registry reallocates.
-    bool menuFound{},actionFound{},registryMoved{};
+    // A left click opens the library at this process instead of a menu: it
+    // names the process the library loads into and edits nothing itself.
+    const Process::ProcessModel* shown{};
+    auto& pplug=ctx.applicationPlugin<Process::ApplicationPlugin>();
+    const auto connection=QObject::connect(&pplug,&Process::ApplicationPlugin::showPresets,
+      &view,[&](const Process::ProcessModel* proc){shown=proc;});
     render({libremidi::from_midi1::note_on(0,48,100)});
-    QTimer::singleShot(2000,&view,[] {
-      while(auto* popup=qobject_cast<QMenu*>(QApplication::activePopupWidget()))
-        popup->close();
-    });
-    QTimer::singleShot(0,&view,[&] {
-      auto* menu=qobject_cast<QMenu*>(QApplication::activePopupWidget());
-      menuFound=menu!=nullptr;
-      if(!menu)return;
-      std::vector<std::pair<QMenu*,QAction*>> path;
-      const auto findAction=[&](auto&& self,QMenu* current)->bool {
-        for(auto* action:current->actions()) {
-          path.emplace_back(current,action);
-          if(action->text()==presets[1].name)return true;
-          if(action->menu()&&self(self,action->menu()))return true;
-          path.pop_back();
-        }
-        return false;
-      };
-      actionFound=findAction(findAction,menu);
-      if(!actionFound){menu->close();return;}
-      const auto* oldStorage=registry.data();
-      const auto additions=registry.capacity()-registry.size()+1;
-      for(std::size_t i=0;i<additions;++i) {
-        auto indexed=presets[0];
-        indexed.name=QStringLiteral("Background indexed preset %1").arg(i);
-        ctx.applicationPlugin<Process::ApplicationPlugin>().addPreset(std::move(indexed));
-      }
-      registryMoved=registry.data()!=oldStorage;
-      for(const auto& [owner,action]:path)
-        score::test::mouseClick(*owner,owner->actionGeometry(action).center());
-    });
-    const auto beforeMenu=doc->commandStack().currentIndex();
+    const auto beforeShow=doc->commandStack().currentIndex();
     clickPreset(Qt::LeftButton);
-    REQUIRE(menuFound);REQUIRE(actionFound);REQUIRE(registryMoved);
-    REQUIRE(doc->commandStack().currentIndex()==beforeMenu+1);
-    REQUIRE(p.settings().sound==SoundRole::Noise);
+    QObject::disconnect(connection);
+    CHECK(shown==&p);
+    REQUIRE(doc->commandStack().currentIndex()==beforeShow);
+    REQUIRE(p.settings().sound==SoundRole::TriangleWave);
     drain(plug);REQUIRE(node->ready());
     render({libremidi::from_midi1::note_off(0,48,0)});
     score::test::flush_deferred_deletes();checkBindings();

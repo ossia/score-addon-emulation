@@ -38,6 +38,17 @@ double frequency(const std::vector<double>& a,double rate) {
 }
 constexpr std::array models{Model::NesNtsc,Model::NesPal,Model::Dmg,Model::Cgb};
 }
+TEST_CASE("APU default roles keep every Role default", "[emulation][apu]") {
+  // Runtime checks: the miscompiled initialiser still satisfies static_assert.
+  const Settings s;
+  for(const auto* bank:{&s.roles,&s.inactiveRoles}) for(int i=0;i<5;++i) {
+    CAPTURE(i);
+    Role expected; if(i==2) expected.level=1;
+    CHECK((*bank)[i]==expected);
+    CHECK((*bank)[i].duty==2); CHECK((*bank)[i].rate==4); CHECK((*bank)[i].linear==127);
+    CHECK((*bank)[i].left); CHECK((*bank)[i].right);
+  }
+}
 TEST_CASE("APU native pulse and triangle/wave timers track host rate", "[emulation][apu]") {
   for(auto m:models) for(double rate:{44100.,48000.,96000.}) for(int role:{0,1,2}) {
     Engine e; REQUIRE(e.prepare(rate,settings(m)));

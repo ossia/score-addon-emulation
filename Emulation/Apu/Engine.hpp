@@ -22,7 +22,10 @@ struct Settings {
   Model model{Model::NesNtsc}; int clock{0}; double volume{0.7};
   RoutingMode routing{RoutingMode::Instrument};
   SoundRole sound{SoundRole::Pulse1}, inactiveSound{SoundRole::Pulse1};
-  std::array<Role,5> roles = [] { std::array<Role,5> r{}; r[2].level=1; return r; }();
+  // Listed element by element: when GCC 14-16 constant-evaluate a value-initialised
+  // std::array<Role,N> whose first edit is at index 2 or more, that element and
+  // every one after it lose Role's default member initialisers.
+  std::array<Role,5> roles{Role{},Role{},Role{.level=1},Role{},Role{}};
   // The editor and automation address roles; switching architectures exchanges
   // these banks without interpreting a NES table index as a Game Boy preload.
   std::array<Role,5> inactiveRoles{roles};

@@ -54,7 +54,7 @@ Further notices registered with the same entries: `munt` also embeds `mt32emu/AU
 
 ## Selected configuration
 
-Newly authored add-on code and presets are GPL-3.0-or-later, except `Emulation/Wurli/Engine.cpp`, which adapts upstream GPL-3.0-only code and retains that restriction. OPL uses libADLMIDI's MIDI orchestration and **ymfm OPL2/OPL3 only**. Selecting an LGPL/BSD emulator does not remove the GPL obligations of the MIDI layer.
+Newly authored add-on code is GPL-3.0-or-later, except `Emulation/Wurli/Engine.cpp`, which adapts upstream GPL-3.0-only code and retains that restriction. OPL uses libADLMIDI's MIDI orchestration and **ymfm OPL2/OPL3 only**. Selecting an LGPL/BSD emulator does not remove the GPL obligations of the MIDI layer.
 
 - Upstream: <https://github.com/Wohlstand/libADLMIDI>
 - Pin: `44f38c9bb2aabc1c09e9c6060ce0dbdc2fe40bde`
@@ -97,7 +97,7 @@ GoatTracker import assessment used [format documentation](https://github.com/lea
 ### Roland LA
 
 - Upstream: [munt/mt32emu](https://github.com/munt/munt/tree/6e7c01fba7e1d50c8fa705834889fd0eac136075/mt32emu), revision `6e7c01fba7e1d50c8fa705834889fd0eac136075`, library version 2.8.3.
-- LAdrenaline is not built for now: `EMULATION_ENABLE_LA` (CMake, default `OFF`) adds its core, process and tests back. Its code and presets stay in the tree.
+- LAdrenaline is not built for now: `EMULATION_ENABLE_LA` (CMake, default `OFF`) adds its core, process and tests back. Its code stays in the tree; its preset is in score-user-library.
 - `3rdparty/munt` is a submodule of [jcelerier/munt](https://github.com/jcelerier/munt/tree/ossia-2026-11): the pin plus the local changes below, one commit each. `cmake/La.cmake` selects the headless C++ synthesizer and internal resampler from `mt32emu/`; no frontends, fake-ROM test assets or ROM images are built or packaged.
 - Library code is LGPL-2.1-or-later; the SHA-1 implementation carries its BSD-3-Clause notice. `AUTHORS.txt`, `COPYING.txt`, `COPYING.LESSER.txt` and source notices are retained and registered with score.
 - Content identification, supported control/PCM roles and machine compatibility come from Munt's ROM tables and API. The adapter uses supported native memory read/write interfaces for semantic patch application and panic recovery. At this pin, `dumpSysexBank` repeats a CM rhythm block; the adapter neither uses nor modifies that helper.
@@ -144,7 +144,7 @@ The permissive HuC source retains upstream limitations: LFO frequency is not har
 
 `factoryBank()` in `Emulation/Opl/Engine.cpp` defines eight original melodic voices and six original drum patches. They are not extracted from a game, manufacturer bank, ROM, or upstream instrument collection. The remaining factory bank slots are explicitly blank. These patches are initialization material, not claims to reproduce a named commercial instrument.
 
-The native `.scp` library contains 22 OPL, 14 PSG, 13 SID, 8 Wurlitzer, 13 Chip Wavetable and 10 Console APU presets, plus the unchanged ROM-dependent LA preset. The OPL set includes eight newly authored patches and native versions of the 14 original bank voices; its native Short wire hat uses a refined decay, without changing `factoryBank()`. All are authored parameter/wave combinations, not extracted tracker instruments or manufacturer banks. Saved post-render gains are loudness-calibrated for the 80 ROM-free presets; LA is excluded without lawful ROMs. LA's 64 user timbres are also authored initialization material; its ROM-backed factory timbres remain external.
+The instruments' native presets are not part of this repository: they are distributed with [score-user-library](https://github.com/ossia/score-user-library) under `Presets/<instrument>`. That set contains 22 OPL, 14 PSG, 13 SID, 8 Wurlitzer, 13 Chip Wavetable and 10 Console APU presets, plus the unchanged ROM-dependent LA preset. The OPL set includes eight newly authored patches and native versions of the 14 original bank voices; its native Short wire hat uses a refined decay, without changing `factoryBank()`. All are authored parameter/wave combinations, not extracted tracker instruments or manufacturer banks. Saved post-render gains are loudness-calibrated for the 80 ROM-free presets; LA is excluded without lawful ROMs. LA's 64 user timbres are also authored initialization material; its ROM-backed factory timbres remain external.
 
 The dependency checkouts include upstream files outside the selected build. Neither its embedded `inst_db*.cpp` databases nor its bank collections are included by `cmake/Release.cmake`. Do not replace this curated source packaging with an indiscriminate recursive copy of `3rdparty/`.
 

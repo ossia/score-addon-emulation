@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Move all presets to [score-user-library](https://github.com/ossia/score-user-library), under `Presets/Opale`, `AYstral`, `SIDérant`, `Wurlie`, `SiCC`, `Consolated` and `LAdrenaline`; this repository no longer contains any. Tests read them from a score-user-library checkout (`EMULATION_PRESET_LIBRARY`, else score's default user library) and skip when it is absent; `Emulation_PresetLibraryTest` checks every one of them.
 - Rename Wootee to **SiCC** in process-library and execution labels, retaining its UUID, preset formats and **Synths → Emulation** category.
 - Use plain punctuation in instrument controls, section titles, tooltips, status messages and preset names. Migrate old APU and PSG default port labels without replacing custom names. Verify all seven factories, 149 source and installed preset loads, unchanged sound payloads, and saved-label migration in the running application.
 - Standardize emulation **Voice allocation**: Mono / Poly / MIDI channel in Opale, AYstral, SIDérant, LAdrenaline, Wurlie and Wootee; Mono / MIDI channel in Consolated, whose heterogeneous hardware roles are not a generic Poly pool. Preserve native resources, part assignments, shared controls and independent LA rhythm.

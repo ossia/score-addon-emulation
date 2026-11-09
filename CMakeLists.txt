@@ -74,6 +74,9 @@ endif()
 option(EMULATION_BUILD_TESTS "Build emulation behavior tests" ${SCORE_TESTING})
 if(EMULATION_BUILD_TESTS)
   enable_testing()
+  # Empty: tests look for the presets in score's default user library.
+  set(EMULATION_PRESET_LIBRARY "" CACHE PATH
+    "score-user-library checkout whose Presets/ the tests load the instruments' presets from")
   if(COMMAND score_setup_catch2)
     score_setup_catch2()
   elseif(NOT TARGET Catch2::Catch2WithMain)
@@ -108,9 +111,21 @@ if(EMULATION_BUILD_TESTS)
       target_include_directories(Emulation_${family}DocumentTest PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}"
         "${SCORE_ROOT_SOURCE_DIR}/tests/fixtures")
+      target_compile_definitions(Emulation_${family}DocumentTest PRIVATE
+        EMULATION_PRESET_LIBRARY_DIR="${EMULATION_PRESET_LIBRARY}")
     endif()
   endforeach()
   if(NOT EMULATION_CORE_ONLY AND COMMAND score_add_test)
+    score_add_test(Emulation_PresetLibraryTest
+      SOURCES Tests/PresetLibraryTest.cpp APP
+      PLUGINS score_plugin_engine score_plugin_scenario score_lib_process score_plugin_dataflow score_plugin_curve
+      LIBS score_emulation_opl score_emulation_psg score_emulation_sid score_emulation_wurli
+           score_emulation_wavetable score_emulation_apu score_addon_emulation)
+    target_include_directories(Emulation_PresetLibraryTest PRIVATE
+      "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}"
+      "${SCORE_ROOT_SOURCE_DIR}/tests/fixtures")
+    target_compile_definitions(Emulation_PresetLibraryTest PRIVATE
+      EMULATION_PRESET_LIBRARY_DIR="${EMULATION_PRESET_LIBRARY}")
     score_add_test(Emulation_ChipQualificationTest
       SOURCES Tests/ChipQualificationTest.cpp APP
       PLUGINS score_plugin_engine score_plugin_scenario score_lib_process

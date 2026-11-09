@@ -38,6 +38,7 @@
 #include <score_test/Events.hpp>
 #include <score_test/Mouse.hpp>
 #include <score_test/Project.hpp>
+#include "PresetLibrary.hpp"
 #include <QEventLoop>
 #include <QDir>
 #include <QFile>
@@ -574,10 +575,10 @@ TEST_CASE("APU sound choice remembers both architectures and native undo restore
 
 
 TEST_CASE("APU native factory presets select their named sound on MIDI channel one", "[emulation][apu][document][preset][routing]") {
-  score::test::run_in_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder=Emulation::Test::presetFolder(QStringLiteral("Consolated"));
+  score::test::run_in_app([&](const score::GUIApplicationContext& ctx) {
     auto* doc=score::test::new_document(ctx);REQUIRE(doc);
     auto* base=score::test::add_process(*doc,QString::fromLatin1(uuid),{});REQUIRE(base);auto& p=static_cast<ProcessModel&>(*base);
-    const auto directory=QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
     CommandDispatcher<> dispatcher{doc->context().commandStack};
     struct FactoryPreset { const char* name; Model model; SoundRole sound; bool triangle; };
     const FactoryPreset presets[]{
@@ -596,9 +597,7 @@ TEST_CASE("APU native factory presets select their named sound on MIDI channel o
       10,10,9,8,7,6,5,4,3,2,2,2,2,2,2,2};
     for(const auto& [name,model,sound,triangle]:presets) {
       CAPTURE(name);
-      QFile file{directory.filePath(QStringLiteral("../Presets/Apu/%1.scp").arg(QString::fromLatin1(name)))};
-      REQUIRE(file.open(QIODevice::ReadOnly));
-      auto preset=Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(),file.readAll());REQUIRE(preset);
+      auto preset=Emulation::Test::loadPreset(ctx.interfaces<Process::ProcessFactoryList>(),folder,QString::fromLatin1(name));REQUIRE(preset);
       const auto before=p.savePreset();
       dispatcher.submit<Scenario::Command::LoadPreset>(p,*preset);REQUIRE(p.error().isEmpty());
       const auto s=p.settings();CHECK(s.routing==RoutingMode::Instrument);
@@ -721,17 +720,15 @@ TEST_CASE("APU native tabs do not route notes and import and sample controls use
 }
 
 TEST_CASE("APU live native preset cycling preserves sample bindings during MIDI", "[emulation][apu][document][gui][preset][live-recall]") {
-  score::test::run_in_gui_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder=Emulation::Test::presetFolder(QStringLiteral("Consolated"));
+  score::test::run_in_gui_app([&](const score::GUIApplicationContext& ctx) {
     auto* doc=score::test::new_document(ctx);REQUIRE(doc);
     auto* base=score::test::add_process(*doc,QString::fromLatin1(uuid),{});REQUIRE(base);
     auto& p=static_cast<ProcessModel&>(*base);
-    const auto directory=QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
     std::array<Process::Preset,2> presets;
     for(int i=0;i<2;++i) {
       const auto name=i==0?QStringLiteral("GB Triangle wave"):QStringLiteral("GB DMG Sand hat");
-      QFile file{directory.filePath(QStringLiteral("../Presets/Apu/%1.scp").arg(name))};
-      REQUIRE(file.open(QIODevice::ReadOnly));
-      auto preset=Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(),file.readAll());
+      auto preset=Emulation::Test::loadPreset(ctx.interfaces<Process::ProcessFactoryList>(),folder,name);
       REQUIRE(preset);presets[i]=std::move(*preset);
     }
     // Exercise the actual stock preset button and command factory, not a

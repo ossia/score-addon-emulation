@@ -34,6 +34,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <score_test/App.hpp>
 #include <score_test/Project.hpp>
+#include "PresetLibrary.hpp"
 #include <score_test/Events.hpp>
 #include <algorithm>
 #include <cmath>
@@ -270,7 +271,8 @@ TEST_CASE("SID restores stereo output after graph buffer recycling", "[emulation
 
 TEST_CASE("SID Three pulse keys keeps every modulation control editable and undoable", "[emulation][sid][sync][document]")
 {
-  score::test::run_in_gui_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("SIDérant"));
+  score::test::run_in_gui_app([&](const score::GUIApplicationContext& ctx) {
     auto* doc = score::test::new_document(ctx); REQUIRE(doc);
     auto* presenter = score::IDocument::try_presenterDelegate<Scenario::ScenarioDocumentPresenter>(*doc);
     REQUIRE(presenter);
@@ -283,10 +285,8 @@ TEST_CASE("SID Three pulse keys keeps every modulation control editable and undo
     macro.commit();
     auto& model = static_cast<ProcessModel&>(*base);
     model.setFoldMode(Process::FoldMode::Unfolded);
-    const auto directory = QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
-    QFile file{directory.filePath(QStringLiteral("../Presets/SID/Three pulse keys.scp"))};
-    REQUIRE(file.open(QIODevice::ReadOnly));
-    auto preset = Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(), file.readAll());
+    auto preset = Emulation::Test::loadPreset(
+        ctx.interfaces<Process::ProcessFactoryList>(), folder, QStringLiteral("Three pulse keys"));
     REQUIRE(preset);
     auto* command = ctx.interfaces<Process::LoadPresetCommandFactoryList>().make(
         &Process::LoadPresetCommandFactory::make, model, *preset, doc->context());
@@ -351,7 +351,8 @@ TEST_CASE("SID Three pulse keys keeps every modulation control editable and undo
 
 TEST_CASE("SID native factory presets transition and undo across all allocations", "[emulation][sid][preset][document]")
 {
-  score::test::run_in_gui_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("SIDérant"));
+  score::test::run_in_gui_app([&](const score::GUIApplicationContext& ctx) {
     auto* doc = score::test::new_document(ctx); REQUIRE(doc);
     auto* base = score::test::add_process(*doc, QString::fromLatin1(uuid), {}); REQUIRE(base);
     auto& model = static_cast<ProcessModel&>(*base);
@@ -360,12 +361,10 @@ TEST_CASE("SID native factory presets transition and undo across all allocations
     std::array<Patch, 5> expected;
     auto& processFactories = ctx.interfaces<Process::ProcessFactoryList>();
     auto& commands = ctx.interfaces<Process::LoadPresetCommandFactoryList>();
-    const auto directory = QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
     for(std::size_t i = 0; i < names.size(); ++i)
     {
-      QFile file{directory.filePath(QStringLiteral("../Presets/SID/%1.scp").arg(QString::fromLatin1(names[i])))};
-      REQUIRE(file.open(QIODevice::ReadOnly));
-      auto preset = Process::Preset::fromJson(processFactories, file.readAll());
+      CAPTURE(names[i]);
+      auto preset = Emulation::Test::loadPreset(processFactories, folder, QString::fromLatin1(names[i]));
       REQUIRE(preset);
       CHECK(model.presetMatches(*preset));
       presets[i] = *preset;

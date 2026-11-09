@@ -29,6 +29,7 @@
 #include <core/document/Document.hpp>
 #include <score_test/App.hpp>
 #include <score_test/Project.hpp>
+#include "PresetLibrary.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <ossia/dataflow/execution_state.hpp>
 #include <ossia/dataflow/data_copy.hpp>
@@ -182,9 +183,17 @@ TEST_CASE("LA native preset changes are atomic and undo restores every edited sl
     auto object = QJsonDocument::fromJson(bad.data).object(); object[QStringLiteral("Patch")] = QStringLiteral("not-base64");
     bad.data = QJsonDocument{object}.toJson(); model.loadPreset(bad);
     CHECK(model.patch() == a); CHECK(changes == 3); CHECK_FALSE(model.error().isEmpty());
-    const auto directory = QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
-    QFile file{directory.filePath(QStringLiteral("../Presets/La/Original saw.scp"))}; REQUIRE(file.open(QIODevice::ReadOnly));
-    auto original = Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(),file.readAll()); REQUIRE(original);
+  });
+}
+
+TEST_CASE("LA Original saw keeps the local ROMs and its authored parts", "[emulation][la][document][preset]")
+{
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("LAdrenaline"));
+  score::test::run_in_app([&](const score::GUIApplicationContext& ctx) {
+    auto* doc = score::test::new_document(ctx); REQUIRE(doc);
+    auto* base = score::test::add_process(*doc,QString::fromLatin1(uuid),{}); REQUIRE(base);
+    auto& model = static_cast<ProcessModel&>(*base);
+    auto original = Emulation::Test::loadPreset(ctx.interfaces<Process::ProcessFactoryList>(),folder,QStringLiteral("Original saw")); REQUIRE(original);
     control(model,ControlROM).setValue(std::string{"private/control.rom"});
     const auto references = model.patch().roms;
     model.loadPreset(*original);
@@ -396,15 +405,14 @@ TEST_CASE("LA named hardware selection remains integer-valued and transient acro
   const auto* pcmPath = std::getenv("SCORE_EMULATION_LA_PCM_ROM");
   if(!controlPath && !pcmPath) SKIP("Lawful matching LA ROMs required to qualify actual program names and selection.");
   REQUIRE(controlPath); REQUIRE(pcmPath);
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("LAdrenaline"));
   score::test::run_in_app([=](const score::GUIApplicationContext& ctx) {
     auto* doc = score::test::new_document(ctx); REQUIRE(doc);
     auto* base = score::test::add_process(*doc,QString::fromLatin1(uuid),{}); REQUIRE(base);
     auto& model = static_cast<ProcessModel&>(*base);
     control(model,ControlROM).setValue(std::string{controlPath});
     control(model,PcmROM).setValue(std::string{pcmPath});
-    QFile presetFile{QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir().filePath(QStringLiteral("../Presets/La/Original saw.scp"))};
-    REQUIRE(presetFile.open(QIODevice::ReadOnly));
-    auto preset = Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(),presetFile.readAll()); REQUIRE(preset);
+    auto preset = Emulation::Test::loadPreset(ctx.interfaces<Process::ProcessFactoryList>(),folder,QStringLiteral("Original saw")); REQUIRE(preset);
     model.loadPreset(*preset);
     Engine prepared{48000.,model.patch()};
     model.acceptROMIdentity(prepared.resolvedROMs(),QString::fromStdString(prepared.machine()),prepared.programCatalog());

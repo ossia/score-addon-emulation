@@ -5,6 +5,7 @@
 #include <Process/ProcessList.hpp>
 #include <score_test/App.hpp>
 #include <score_test/Project.hpp>
+#include "PresetLibrary.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <QFile>
 #include <QFileInfo>
@@ -57,17 +58,15 @@ double pitch(const std::vector<double>& samples)
 
 TEST_CASE("Polyphonic factory wavetable pitch does not depend on occupied voices", "[emulation][wavetable][preset][pitch]")
 {
-  score::test::run_in_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("SiCC"));
+  score::test::run_in_app([&](const score::GUIApplicationContext& ctx) {
     auto* document = score::test::new_document(ctx); REQUIRE(document);
     auto* base = score::test::add_process(*document, QStringLiteral("989bc228-c2e7-40a8-a56e-4700b946d864"), {}); REQUIRE(base);
     auto& model = static_cast<ProcessModel&>(*base);
-    const auto directory = QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
     for(const char* name : {"SCC Plus Oboe thirds", "SCC Octave staircase"})
     {
       CAPTURE(name);
-      QFile file{directory.filePath(QStringLiteral("../Presets/Wavetable/%1.scp").arg(QString::fromLatin1(name)))};
-      REQUIRE(file.open(QIODevice::ReadOnly));
-      auto preset = Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(), file.readAll()); REQUIRE(preset);
+      auto preset = Emulation::Test::loadPreset(ctx.interfaces<Process::ProcessFactoryList>(), folder, QString::fromLatin1(name)); REQUIRE(preset);
       model.loadPreset(*preset); REQUIRE(model.error().isEmpty());
       const auto settings = model.settings();
       REQUIRE(settings.assignment == Assignment::Polyphonic);
@@ -99,17 +98,16 @@ TEST_CASE("Polyphonic factory wavetable pitch does not depend on occupied voices
 
 TEST_CASE("Every shipped wavetable preset contains canonical single-frame samples", "[emulation][wavetable][preset][samples]")
 {
-  score::test::run_in_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("SiCC"));
+  score::test::run_in_app([&](const score::GUIApplicationContext& ctx) {
     auto* document = score::test::new_document(ctx); REQUIRE(document);
     auto* base = score::test::add_process(*document, QStringLiteral("989bc228-c2e7-40a8-a56e-4700b946d864"), {}); REQUIRE(base);
     auto& model = static_cast<ProcessModel&>(*base);
-    QDir directory{QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir().filePath("../Presets/Wavetable")};
-    const auto files = directory.entryList({"*.scp"}, QDir::Files);
+    const auto files = folder.entryList({"*.scp"}, QDir::Files);
     REQUIRE(files.size() == 13);
     for(const auto& name : files) {
       CAPTURE(name.toStdString());
-      QFile file{directory.filePath(name)}; REQUIRE(file.open(QIODevice::ReadOnly));
-      auto preset = Process::Preset::fromJson(ctx.interfaces<Process::ProcessFactoryList>(), file.readAll()); REQUIRE(preset);
+      auto preset = Emulation::Test::loadPreset(ctx.interfaces<Process::ProcessFactoryList>(), folder, QFileInfo{name}.completeBaseName()); REQUIRE(preset);
       model.loadPreset(*preset); REQUIRE(model.error().isEmpty());
       const auto settings = model.settings();
       Engine engine{48000., settings};

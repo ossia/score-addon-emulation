@@ -83,7 +83,7 @@ Document schema 4 appends Voice allocation at ID 76; schemas 1–3 and older pre
 
 All seven families use score's standard process preset menu and library, like FoMo and Kaboom. There is no generic preset inlet or separate score-preset selector in their editors.
 
-The ROM-free factory library contains **80 native `.scp` presets**:
+score-user-library holds **80 ROM-free native presets** for them, one folder per instrument under `Presets/`:
 
 | Family | Presets | Sound coverage |
 |---|---:|---|
@@ -96,7 +96,7 @@ The ROM-free factory library contains **80 native `.scp` presets**:
 
 This adds 44 newly authored sounds and native preset versions of OPL's 14 original bank voices. The native **Short wire hat** has a longer decay than its original hardware-bank initialization patch. One existing **LA Original saw** preset remains separate: lawful ROMs were unavailable, so it has not been loudness-matched.
 
-Copy the family folders from `Presets/` into the active score library's `Presets` directory (normally `~/Documents/ossia/score/packages/default/Presets`) and restart score to discover them. Use **Save current preset** for your own sounds. Native recall and undo restore musical controls, including Volume; LA recall retains the recipient's ROM selection.
+This repository holds no presets. score installs and updates them with its user library (normally `~/Documents/ossia/score/packages/default`); the LA preset is in `Presets/LAdrenaline`. Use **Save current preset** for your own sounds. Native recall and undo restore musical controls, including Volume; LA recall retains the recipient's ROM selection.
 
 ### Loudness and gain
 
@@ -281,9 +281,11 @@ cmake --build /path/to/score-build --target \
   Emulation_WurliEngineTest Emulation_WurliDocumentTest \
   Emulation_WavetableEngineTest Emulation_WavetableDocumentTest \
   Emulation_ApuEngineTest Emulation_ApuDocumentTest \
-  Emulation_ChipQualificationTest
+  Emulation_ChipQualificationTest Emulation_PresetLibraryTest
 ctest --test-dir /path/to/score-build -R '^Emulation_' --output-on-failure
 ```
+
+The preset tests load the instruments' presets from a [score-user-library](https://github.com/ossia/score-user-library) checkout: the `EMULATION_PRESET_LIBRARY` environment variable, else the CMake cache variable of the same name, else score's default user library. A test case whose instrument folder is missing there is skipped and says which folder it looked for. `Emulation_PresetLibraryTest` loads every preset of each instrument and checks it for errors, control ports and save/reload stability.
 
 For the Qt-free cores and OPL renderer:
 

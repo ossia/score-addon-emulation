@@ -9,7 +9,7 @@ endif()
 file(MAKE_DIRECTORY "${stage}")
 foreach(path IN ITEMS CMakeLists.txt addon.json score_addon_emulation.cpp
     score_addon_emulation.hpp LICENSE README.md DEPENDENCIES.md CHANGELOG.md
-    Emulation Presets Tests Tools cmake)
+    Emulation Tests Tools cmake)
   file(COPY "${root}/${path}" DESTINATION "${stage}")
 endforeach()
 set(dep "${root}/3rdparty/libADLMIDI")

@@ -22,6 +22,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <score_test/App.hpp>
 #include <score_test/Project.hpp>
+#include "PresetLibrary.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -123,17 +124,16 @@ TEST_CASE("Wurlitzer boosted Volume round-trips without scaling old values or Am
 }
 TEST_CASE("Wurlitzer original native presets load atomically and undo restores all controls", "[emulation][wurli][preset][document]")
 {
-  score::test::run_in_gui_app([](const score::GUIApplicationContext& ctx) {
+  const auto folder = Emulation::Test::presetFolder(QStringLiteral("Wurlie"));
+  score::test::run_in_gui_app([&](const score::GUIApplicationContext& ctx) {
     auto* doc = score::test::new_document(ctx); REQUIRE(doc);
     auto* base = score::test::add_process(*doc, QString::fromLatin1(uuid), {}); REQUIRE(base);
     auto& model = static_cast<ProcessModel&>(*base);
     auto& factories = ctx.interfaces<Process::ProcessFactoryList>();
     auto& commands = ctx.interfaces<Process::LoadPresetCommandFactoryList>();
-    const auto directory = QFileInfo{QString::fromUtf8(__FILE__)}.absoluteDir();
     for(const char* name : {"Reed room", "Dry felt", "Evening vibrato", "Bright cabinet"}) {
-      QFile file{directory.filePath(QStringLiteral("../Presets/Wurli/%1.scp").arg(QString::fromLatin1(name)))};
-      REQUIRE(file.open(QIODevice::ReadOnly));
-      auto preset = Process::Preset::fromJson(factories, file.readAll()); REQUIRE(preset);
+      CAPTURE(name);
+      auto preset = Emulation::Test::loadPreset(factories, folder, QString::fromLatin1(name)); REQUIRE(preset);
       CHECK(model.presetMatches(*preset));
       control(model, VoiceAllocation).setValue(0);
       const auto before = model.settings();

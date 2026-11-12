@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Thin local interface to the pinned Charles MacDonald / libvgm core.
-#include "emu/cores/c6280_mame.c"
+#include <3rdparty/libvgm/emu/cores/c6280_mame.c>
 void* score_huc_new(unsigned clock, unsigned rate) {
   void* p = device_start_c6280mame(clock, rate);
   if(p) device_reset_c6280mame(p);

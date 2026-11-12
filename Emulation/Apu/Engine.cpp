@@ -3,7 +3,7 @@
 #include <Emulation/Volume.hpp>
 #include <Nes_Apu.h>
 #include <Blip_Buffer.h>
-#include <gb_apu.h>
+#include <3rdparty/apu/gb_apu/gb_apu.h>
 #include <algorithm>
 #include <bit>
 #include <cmath>

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fix Windows and case-insensitive macOS builds by qualifying the Game Boy C API header separately from game-music-emu's `Gb_Apu.h`. Qualify the HuC6280 core include through the addon root instead of a per-source include directory, including MinGW response-file builds.
 - Move all presets to [score-user-library](https://github.com/ossia/score-user-library), under `Presets/Opale`, `AYstral`, `SIDérant`, `Wurlie`, `SiCC`, `Consolated` and `LAdrenaline`; this repository no longer contains any. Tests read them from a score-user-library checkout (`EMULATION_PRESET_LIBRARY`, else score's default user library) and skip when it is absent; `Emulation_PresetLibraryTest` checks every one of them.
 - Rename Wootee to **SiCC** in process-library and execution labels, retaining its UUID, preset formats and **Synths → Emulation** category.
 - Use plain punctuation in instrument controls, section titles, tooltips, status messages and preset names. Migrate old APU and PSG default port labels without replacing custom names. Verify all seven factories, 149 source and installed preset loads, unchanged sound payloads, and saved-label migration in the running application.

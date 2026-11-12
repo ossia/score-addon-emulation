@@ -16,9 +16,6 @@ add_library(score_emulation_wavetable STATIC
   "${EMULATION_WAVETABLE_ROOT}/Emulation/Wavetable/Engine.cpp"
   "${EMULATION_EMU2212_DIR}/emu2212.c"
   "${EMULATION_WAVETABLE_ROOT}/Emulation/Wavetable/HucCore.c")
-# Scoped to the adapter: the libvgm root also holds framework headers.
-set_source_files_properties("${EMULATION_WAVETABLE_ROOT}/Emulation/Wavetable/HucCore.c"
-  PROPERTIES INCLUDE_DIRECTORIES "${EMULATION_LIBVGM_DIR}")
 target_compile_features(score_emulation_wavetable PUBLIC cxx_std_20)
 target_include_directories(score_emulation_wavetable PUBLIC "${EMULATION_WAVETABLE_ROOT}"
   PRIVATE "${EMULATION_EMU2212_DIR}")

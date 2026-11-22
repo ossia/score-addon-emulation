@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // What score shows of the add-on: the third-party components listed in the
 // About dialog's Licenses tab, and the instruments in the process library.
+#include <Process/Dataflow/Port.hpp>
+#include <Process/Process.hpp>
 #include <Process/ProcessList.hpp>
+#include <QApplication>
+#include <score_test/Document.hpp>
+#include <core/document/Document.hpp>
+#include <memory>
 #include <core/presenter/Licenses.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <score_test/App.hpp>
@@ -140,5 +146,45 @@ TEST_CASE("The process library offers the enabled emulation instruments only", "
       CHECK(names.contains(QString::fromUtf8(name)));
     }
     CHECK(names.contains(QStringLiteral("LAdrenaline")) == laBuilt());
+  });
+}
+
+TEST_CASE("Each instrument says which kinds of port it has, as it makes them", "[emulation][registry]")
+{
+  // The process picker offers, from a port, the processes that say they can
+  // be cabled to it
+  score::test::run_in_app([](const score::GUIApplicationContext& ctx) {
+    auto doc = score::test::new_document(ctx);
+    REQUIRE(doc);
+    int checked = 0;
+    for(Process::ProcessModelFactory& factory : ctx.interfaces<Process::ProcessFactoryList>())
+    {
+      if(factory.category() != QStringLiteral("Synths/Emulation"))
+        continue;
+      CAPTURE(factory.prettyName().toStdString());
+      const auto d = factory.descriptor(QString{});
+      REQUIRE(d.inlets);
+      REQUIRE(d.outlets);
+      std::unique_ptr<Process::ProcessModel> proc{factory.make(
+          TimeVal::fromMsecs(1000), QString{}, Id<Process::ProcessModel>{1},
+          doc->context(), nullptr)};
+      REQUIRE(proc);
+      const auto kinds = [](const auto& ports) {
+        QSet<int> s;
+        for(const Process::Port* p : ports)
+          s.insert(int(p->type()));
+        return s;
+      };
+      const auto listed = [](const std::vector<Process::PortType>& v) {
+        QSet<int> s;
+        for(auto t : v)
+          s.insert(int(t));
+        return s;
+      };
+      CHECK(kinds(proc->inlets()) == listed(*d.inlets));
+      CHECK(kinds(proc->outlets()) == listed(*d.outlets));
+      checked++;
+    }
+    CHECK(checked >= 6);
   });
 }
